@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+
+<div id="app">{{ message }}</div>
+
+</body>
+<script>
+    const { createApp, ref } = Vue;
+    createApp({
+        setup() {
+            const message = ref('Hello vue!')
+            const siteList = [];
+            axios.get('http://api.jiananweb.top/api/site')
+                .then(res=>{
+                    console.log(res)
+                })
+            return {
+                message
+            }
+        }
+    }).mount('#app')
+</script>
+</html>
