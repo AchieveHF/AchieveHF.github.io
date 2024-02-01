@@ -2,30 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>搜索</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>搜啊</title>
 
+    <script src="https://unpkg.com/vue@3.4.15/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+    <link rel="icon" sizes="any" href="ss.png">
+    <style>
+        body{
+            background-color: #fefefe;
+        }
+        .content{
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .searchBox{
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fefefe;
+        }
+        .siteCate .cateTitle{
+            display: inline-block;
+            padding: 3px;
+            border: 1px #f1f1f1 solid;
+            cursor: pointer;
+        }
+        .inputBox{
+            width: 99%;
+            border: 1px #f1f1f1 solid;
+        }
+        .inputBox .searchInput{
+            display: block;
+            margin: 0 auto;
+            width: 98%;
+            height: 35px;
+            font-size: 17px;
+            border: none;
+            outline: none;
+        }
+        .siteList a{
+            display: inline-block;
+            border: 1px #f1f1f1 solid;
+            padding: 2px 5px;
+            margin-right: 5px;
+            text-decoration: none;
+            color: #000;
+            font-size: 15px;
+            font-weight: bold;
+
+        }
+        .siteList .siteBox{
+            height: 20px;
+            display: flex;
+            align-items: center; /* 将项目垂直居中 */
+        }
+        .siteList .siteBox .siteFavicon{
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+        .siteList .siteBox .siteTitle{
+            padding-left: 5px;
+        }
+
+    </style>
 </head>
 <body>
 
-<div id="app">{{ message }}</div>
+<div id="app">
+    <div class="content">
+        <div class="searchBox">
+            <div class="siteCate">
+                <div class="cateTitle" v-for="(item,index) in siteList.cateList" @click="cate_index = index" :style="(index == cate_index)?'border-bottom:2px ##fefefe solid':''">
+                    {{item.cate_title}}
+                </div>
+            </div>
+            <div class="inputBox">
+                <input class="searchInput" type="text" v-model="keyword">
+            </div>
+            <div class="siteList">
+                <a target="_blank" :href="keyword != ''?(item.site_search_url+keyword):(item.site_url)" v-for="item in siteList.cateList[cate_index].data">
+                    <div class="siteBox">
+                        <img class="siteFavicon" :src="item.site_icon" alt="">
+                        <span class="siteTitle">{{item.site_title}}</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script>
     const { createApp, ref } = Vue;
     createApp({
         setup() {
-            const message = ref('Hello vue!')
-            const siteList = [];
-            axios.get('http://api.jiananweb.top/api/site')
+            const keyword = ref('');
+            const siteList = ref([]);
+            const cate_index = ref('0')
+            axios.get('http://api.jiananweb.top/api/site/index')
                 .then(res=>{
-                    console.log(res)
+                    siteList.value = res.data.data
                 })
+            console.log(siteList)
             return {
-                message
+                siteList,
+                keyword,
+                cate_index
             }
         }
     }).mount('#app')
+
 </script>
 </html>
